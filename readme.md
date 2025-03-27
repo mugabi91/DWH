@@ -61,9 +61,82 @@ All data sources are CSV files and are loaded into SQL Server.
 - Add indexing strategies for faster query execution.
 - Introduce data validation and monitoring mechanisms.
 
-## Author
-Mugabi Trevor L
 
-## License
-This project is open-source and available under the [MIT License](LICENSE).
+
+# Requirements for Recreating the Data Warehouse
+
+## 1. System Requirements
+- **Operating System:** Windows (Recommended) or Linux with SQL Server support
+- **Database Engine:** Microsoft SQL Server (2016 or later recommended)
+- **Storage:** Sufficient disk space to accommodate the raw CSV files and processed data
+- **Memory:** At least 4GB RAM (Recommended: 8GB+ for better performance)
+
+## 2. Software & Tools
+- **Microsoft SQL Server** (Standard or Developer Edition)
+- **SQL Server Management Studio (SSMS)** for querying and administration
+- **PowerShell or Command Line** (optional, for automated file handling)
+- **Git** (optional, for version control and managing scripts)
+
+## 3. Required Data Files
+Ensure you have the following CSV files from the ERP and CRM systems:
+
+### CRM System Files:
+- `cust_info.csv` - Customer details
+- `prod_info.csv` - Product details
+- `sales_details.csv` - Sales transactions
+
+### ERP System Files:
+- `cust_az12.csv` - Additional customer data
+- `loc_a101.csv` - Location data
+- `px_cat_giv2.csv` - Product categorization
+
+## 4. Database Setup
+### Step 1: Install SQL Server
+Ensure SQL Server is installed and running. If not, download and install from [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/).
+
+### Step 2: Create the Database
+Execute the following command in SSMS:
+```sql
+CREATE DATABASE DWH_Project;
+GO
+```
+
+### Step 3: Set Up Schema and Layers
+Run the provided T-SQL scripts in the repository to create:
+- **Bronze Layer** (Raw staging tables)
+- **Silver Layer** (Transformed, cleaned tables)
+- **Gold Layer** (Views and final data model)
+
+### Step 4: Load the Data
+Use `BULK INSERT` or `OPENROWSET` to load data from CSV files into the Bronze Layer.
+Example:
+```sql
+BULK INSERT Bronze.cust_info
+FROM 'replace with path to the location of your files on your pc'
+WITH (
+    FIELDTERMINATOR = ',',
+    ROWTERMINATOR = '\n',
+    FIRSTROW = 2
+);
+```
+
+### Step 5: Run Transformation Queries
+Execute the scripts to clean and transform the data into the Silver Layer.
+
+### Step 6: Validate and Query the Data Model
+Once data is in the Gold Layer, use the views for analytics and reporting.
+
+## 5. Optional Enhancements
+- **Automate Data Loading:** Set up SQL Server Integration Services (SSIS) or use Python scripts.
+- **Performance Optimization:** Add indexing and partitioning strategies.
+- **Data Monitoring:** Implement logging and validation checks.
+
+## 6. Troubleshooting
+- Ensure SQL Server allows bulk inserts (`sp_configure 'show advanced options', 1;`)
+- Check file paths and permissions for CSV import
+- Verify data types during transformations to avoid errors
+
+## 7. Author & License
+- Author: Mugabi Trevor L
+- License: MIT License
 
