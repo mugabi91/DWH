@@ -26,7 +26,7 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 			PRINT 'silver.crm_sales does not exist';
 
 		PRINT 'Creating silver.crm_sales table';
-		CREATE TABLE silver.crm_sales(
+		CREATE TABLE [silver].crm_sales(
 				[crm_order_id] NVARCHAR(100),
 				[crm_product_key] NVARCHAR(100),
 				[crm_customer_id] NVARCHAR(100),
@@ -135,27 +135,82 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 				PRINT 'silver.crm_prd_info table doesnot exist';
 		PRINT 'Creating silver.crm_prd_info table';
 		CREATE TABLE silver.crm_prd_info(
-			[crm_prd_id] INT,
-			[crm_prd_key] NVARCHAR(50),
-			[crm_prd_nm] NVARCHAR(80),
-			[crm_prd_cost] INT,
-			[crm_prd_line] NVARCHAR(50),
-			[crm_prd_start_dt] DATE,
-			[crm_prd_end_dt] DATE,
-			[dw_created_at] DATETIME
+				crm_prd_cat_id NVARCHAR(255),
+				crm_prd_key NVARCHAR(255),
+				crm_prd_name NVARCHAR(255),
+				crm_prd_cost FLOAT,
+				crm_prd_line NVARCHAR(255),
+				crm_prd_start_date DATE,
+				crm_prd_end_date DATE,
+				dwh_created_at DATETIME
 			);
 		-- insert silver layer data for table silver.crm_prd_info
+		BEGIN TRY
+			WITH clean_crm_prd_info AS(
+				SELECT 
+					CAST(SUBSTRING(UPPER(TRIM(prd_key)),1,5) AS NVARCHAR) AS prd_cat_id,
+					CAST(SUBSTRING(UPPER(TRIM(prd_key)),7,LEN(UPPER(TRIM(prd_key)))) AS NVARCHAR) AS prd_key,
+					CAST(TRIM(prd_nm)AS NVARCHAR) AS prd_nm,
+					CAST(prd_cost AS FLOAT ) AS prd_cost,
+					CASE 
+						WHEN UPPER(TRIM(prd_line)) = 'M' THEN 'Mountain'
+						WHEN UPPER(TRIM(prd_line)) = 'R' THEN 'Road'
+						WHEN UPPER(TRIM(prd_line)) = 'S' THEN 'Other Sales'
+						WHEN UPPER(TRIM(prd_line)) = 'T' THEN 'Touring'
+						ELSE 'n/a'
+					END AS prd_line,
+					CASE
+						WHEN TRY_CONVERT(DATE, prd_start_dt) IS NOT NULL AND TRY_CONVERT(DATE, prd_end_dt) IS NOT NULL AND
+							TRY_CONVERT(DATE, prd_end_dt) <= TRY_CONVERT(DATE, prd_start_dt)
+							THEN TRY_CONVERT(DATE, prd_end_dt)
+						WHEN prd_start_dt IS NULL THEN 'N/A'
+						ELSE
+							TRY_CONVERT(DATE, prd_start_dt)
+					END AS prd_start_dt,
+					CASE
+						WHEN prd_end_dt  IS NULL THEN NULL
+						WHEN prd_start_dt IS NOT NULL AND TRY_CONVERT(DATE, prd_start_dt) >= TRY_CONVERT(DATE, prd_end_dt)
+						THEN TRY_CONVERT(DATE, prd_start_dt)
+					END AS prd_end_dt,
+					ROW_NUMBER() OVER( PARTITION BY TRY_CONVERT(DATE, prd_start_dt) 
+					ORDER BY TRY_CONVERT(DATE, prd_start_dt) ASC) AS row_num,
+					GETDATE() AS dwh_created_at
+				FROM bronze.crm_prd_info 
+				),
 
-
+				Final AS(
+					SELECT
+						prd_cat_id,
+						prd_key,
+						prd_nm,
+						prd_cost,
+						prd_line,
+						prd_start_dt,
+						prd_end_dt,
+						dwh_created_at
+					FROM clean_crm_prd_info
+				)INSERT INTO silver.crm_prd_info(
+					crm_prd_cat_id,
+					crm_prd_key,
+					crm_prd_name,
+					crm_prd_cost,
+					crm_prd_line,
+					crm_prd_start_date,
+					crm_prd_end_date,
+					dwh_created_at
+				)
+				SELECT * FROM Final;
+		END TRY
+		BEGIN CATCH
+			PRINT 'Table data insertion ERROR: silver.crm_prd_info';
+			PRINT 'ERROR:'+ ERROR_MESSAGE();
+		END CATCH;
 
 		PRINT 'Data import successfully table: silver.crm_prd_info';
 		PRINT '---------------------------------------------------------------';
 		PRINT '';
 		PRINT '---------------------------------------------------------------';
 		-- prd_info table end.
-
-
-
 
 		-- silver.cust_info table begin.
 
