@@ -164,7 +164,7 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 		PRINT 'TABLE: bronze.crm_sales , ACTION: Data import';
 		BEGIN TRY 
 			BULK INSERT bronze.crm_sales 
-			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\sales_details.csv'
+			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\sales_details.csv' -- replace with path to your file location
 			WITH (
 				FIELDTERMINATOR = ',',
 				ROWTERMINATOR = '\n',  -- or '0x0D0A' or '0x0a' if needed
@@ -191,7 +191,7 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 		PRINT 'TABLE: bronze.prd_info , ACTION: Data import';
 		BEGIN TRY
 			BULK INSERT bronze.crm_prd_info 
-			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\prd_info.csv'
+			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\prd_info.csv' -- replace with path to your file location
 			WITH (
 				FIELDTERMINATOR = ',',
 				ROWTERMINATOR = '\n',  -- or '0x0D0A' or '0x0a' if needed
@@ -219,7 +219,7 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 		PRINT 'TABLE: bronze.crm_cust_info , ACTION: Data import';
 		BEGIN TRY
 			BULK INSERT bronze.crm_cust_info 
-			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\cust_info.csv'
+			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\cust_info.csv' -- replace with path to your file location
 			WITH (
 				FIELDTERMINATOR = ',',
 				ROWTERMINATOR = '\n',  -- or '0x0D0A' or '0x0a' if needed
@@ -246,7 +246,7 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 		PRINT 'TABLE: bronze.erp_px_cat , ACTION: Data import';
 		BEGIN TRY
 			BULK INSERT bronze.erp_px_cat 
-			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\PX_CAT_G1V2.csv'
+			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\PX_CAT_G1V2.csv' -- replace with path to your file location
 			WITH (
 				FIELDTERMINATOR = ',',
 				ROWTERMINATOR = '\n',  -- or '0x0D0A' or '0x0a' if needed
@@ -273,7 +273,7 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 		PRINT 'TABLE: bronze.erp_Loc , ACTION: Data import';
 		BEGIN TRY 
 			BULK INSERT bronze.erp_Loc 
-			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\LOC_A101.csv'
+			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\LOC_A101.csv' -- replace with path to your file location
 			WITH (
 				FIELDTERMINATOR = ',',
 				ROWTERMINATOR = '\n',  -- or '0x0D0A' or '0x0a' if needed
@@ -300,7 +300,7 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 		PRINT 'TABLE: bronze.erp_Cust , ACTION: Data import';
 		BEGIN TRY 
 			BULK INSERT bronze.erp_cust
-			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\CUST_AZ12.csv'
+			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\CUST_AZ12.csv' -- replace with path to your file location
 			WITH (
 				FIELDTERMINATOR = ',',
 				ROWTERMINATOR = '\n',  -- or '0x0D0A' or '0x0a' if needed
