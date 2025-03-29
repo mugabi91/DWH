@@ -113,7 +113,7 @@ Ensure SQL Server is installed and running. If not, download and install from [M
 Execute the following command in SSMS:
 
 ```sql
-CREATE DATABASE DWH_Project;
+CREATE DATABASE DWH;
 GO
 ```
 
