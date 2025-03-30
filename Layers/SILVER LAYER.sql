@@ -471,8 +471,12 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 							DAY(TRY_CONVERT(DATE, cust_Bdate)) > DAY(GETDATE()))
 						THEN 1
 						ELSE 0
-					END AS age
+					END AS age,
 
+					ROW_NUMBER() OVER(
+						PARTITION BY CAST(SUBSTRING(cust_id, 9, LEN(cust_id)) AS NVARCHAR) 
+						ORDER BY cust_id
+					) AS rn
 				FROM  bronze.erp_cust
 				),
 
@@ -482,7 +486,7 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 						birth_date,
 						gender,
 						GETDATE() AS dwh_created_at
-					FROM clean_erp_cust  WHERE age BETWEEN 1 AND 109
+					FROM clean_erp_cust  WHERE age BETWEEN 1 AND 109 AND rn = 1
 				)
 				INSERT INTO silver.erp_cust(
 						erp_customer_id,
