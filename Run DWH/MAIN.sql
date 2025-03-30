@@ -28,7 +28,6 @@ USE DWH;
 
     GO
 
-    /*
     BEGIN TRY 
         -- create silver layer, transform and load data into silver layer
         EXECUTE [Load_gold_Layer]
@@ -38,4 +37,4 @@ USE DWH;
         PRINT ERROR_MESSAGE();
         RETURN;
     END CATCH;
-    */
+
