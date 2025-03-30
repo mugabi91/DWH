@@ -446,7 +446,8 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 		CREATE TABLE silver.erp_cust(
 				erp_customer_id NVARCHAR(100),
 				erp_birth_date DATE,
-				erp_gender NVARCHAR(50)
+				erp_gender NVARCHAR(50),
+				erp_dwh_created_at DATETIME
 				);
 		PRINT 'Table has been created Successfully: silver.erp_Cust';	
 		PRINT '---------------------------------------------------------------';
@@ -479,13 +480,15 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 					SELECT 
 						customer_id,
 						birth_date,
-						gender
+						gender,
+						GETDATE() AS dwh_created_at
 					FROM clean_erp_cust  WHERE age BETWEEN 1 AND 109
 				)
 				INSERT INTO silver.erp_cust(
 						erp_customer_id,
 						erp_birth_date,
-						erp_gender
+						erp_gender,
+						erp_dwh_created_at
 				)
 				SELECT * FROM Final;
 			PRINT 'Created, Transformed and loaded successfully TABLE: silver.erp_cust';
