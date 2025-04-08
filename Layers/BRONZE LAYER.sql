@@ -2,15 +2,27 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 	BEGIN
 		-- Switching to the correct database 
 		PRINT 'SWITCHING TO DWH';
+
 		PRINT '';
-		PRINT '===============================================================';
-		PRINT 'BEGINNING TO TRUNCATE AND LOAD DATA ';
-		PRINT '===============================================================';
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
+		PRINT '                           BRONZE LAYER STARTING                              ';
+		PRINT '==============================================================================';
+		PRINT '';
+
+		PRINT '==============================================================================';
 		PRINT 'TABLE: Bronze.crm_sales, ACTION: Creation/setup';
-		PRINT '---------------------------------------------------------------';
+		PRINT '------------------------------------------------------------------------------';
+
+
+		-- overall time set up 
+		DECLARE @start_time DATETIME, @end_time DATETIME;
 
 		-- crm_sales table begin.
+
+		-- set overrall start time
+		SET @start_time = GETDATE();
+
 		IF OBJECT_ID('bronze.crm_sales') IS NOT NULL
 			BEGIN
 				PRINT 'Dropping bronze.crm_Sales table';
@@ -32,13 +44,15 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 			sls_quantity INT,	
 			sls_price INT
 		);
+		PRINT 'Table has been created Successfully: Bronze.crm_sales';	
+		PRINT '==============================================================================';
 
-		PRINT 'Data import successfully table: Bronze.crm_sales';
-		PRINT '---------------------------------------------------------------';
 		PRINT '';
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
 		PRINT 'TABLE: Bronze.crm_prd_info, ACTION: Creation/setup';
-		PRINT '---------------------------------------------------------------';
+		PRINT '------------------------------------------------------------------------------';
+
 		-- crm_sales table end
 
 		-- prd_info table begin.
@@ -61,9 +75,15 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 			prd_end_dt DATE
 			);
 		PRINT 'Table has been created Successfully: Bronze.crm_prd_info';	
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		PRINT '';
 		-- prd_info table end.
+
+
+		PRINT '==============================================================================';
+		PRINT 'TABLE: Bronze.crm_cust_info, ACTION: Creation/setup';
+		PRINT '------------------------------------------------------------------------------';
 
 		-- cust_info table begin.
 		IF OBJECT_ID('bronze.crm_cust_info') IS NOT NULL
@@ -86,11 +106,15 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 
 			);
 		PRINT 'Table has been created Successfully: Bronze.crm_cust_info';	
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		PRINT '';
 		-- cust_info table end.
 
-	
+		PRINT '==============================================================================';
+		PRINT 'TABLE: Bronze.erp_px_cat, ACTION: Creation/setup';
+		PRINT '------------------------------------------------------------------------------';
+
 		-- erp_px_cat table begin.
 		IF OBJECT_ID('bronze.erp_px_cat') IS NOT NULL
 			BEGIN
@@ -108,10 +132,14 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 			cat_maintenace NVARCHAR(50)
 		);
 		PRINT 'Table has been created Successfully: Bronze.erp_px_cat';	
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		PRINT '';
 		-- erp_px_cat table end.
 
+		PRINT '==============================================================================';
+		PRINT 'TABLE: Bronze.erp_Loc, ACTION: Creation/setup';
+		PRINT '------------------------------------------------------------------------------';
 
 		-- erp_Loc table begin.
 		IF OBJECT_ID('bronze.erp_Loc') IS NOT NULL
@@ -128,10 +156,14 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 			loc_cntry NVARCHAR(50)
 		);
 		PRINT 'Table has been created Successfully: Bronze.erp_Loc';	
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		PRINT '';
 		-- erp_Loc table end.
 
+		PRINT '==============================================================================';
+		PRINT 'TABLE: Bronze.erp_cust, ACTION: Creation/setup';
+		PRINT '------------------------------------------------------------------------------';
 
 		-- erp_cust table begin.
 		IF OBJECT_ID('bronze.erp_cust') IS NOT NULL
@@ -149,7 +181,8 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 			cust_gender NVARCHAR(50)
 		);
 		PRINT 'Table has been created Successfully: Bronze.erp_Cust';	
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		PRINT '';
 		-- erp_cust table end.
 
@@ -157,12 +190,23 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 
 		----------------------------------------------------------------------------------------------------------------------------------------
 		-- LOADING IN DATA INTO TABLES 
-		PRINT '===============================================================';
+
+		PRINT '==============================================================================';
 		PRINT 'ATTEMPTING TO IMPORT DATA INTO BRONZE LAYER';
-		PRINT '===============================================================';
+		PRINT '==============================================================================';
+		PRINT '';
 		-- load crm_sales begin
+		PRINT '==============================================================================';
 		PRINT 'TABLE: bronze.crm_sales , ACTION: Data import';
-		BEGIN TRY 
+
+		-- tbl time setup 
+		DECLARE @tbl_start_time DATETIME, @tbl_end_time DATETIME;
+
+		BEGIN TRY
+
+			-- table  start time setup 
+			SET @tbl_start_time = GETDATE();
+
 			BULK INSERT bronze.crm_sales 
 			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\sales_details.csv' -- replace with path to your file location
 			WITH (
@@ -171,9 +215,15 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 				FIRSTROW = 2,
 				TABLOCK
 			);	
-	
-			PRINT 'Data import successfully table: Bronze.crm_sales';	
-			PRINT '---------------------------------------------------------------';
+
+			-- table end time setup
+			SET @tbl_end_time = GETDATE();
+			PRINT '------------------------------------------------------------------------------';
+			PRINT 'Data imported successfully table: Bronze.crm_sales';	
+			PRINT 'LAYER: BRONZE';
+			PRINT 'TABLE: crm_sales';
+			PRINT 'LOADING TIME (seconds): ' +  ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
+			PRINT '==============================================================================';
 			PRINT '';
 		END TRY
 		BEGIN CATCH 
@@ -187,9 +237,15 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 		-- load crm_sales End.
 
 		-- load crm_prd_info begin
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
+
 		PRINT 'TABLE: bronze.prd_info , ACTION: Data import';
 		BEGIN TRY
+
+			-- table time set up 
+			SET @tbl_start_time = GETDATE();
+
 			BULK INSERT bronze.crm_prd_info 
 			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\prd_info.csv' -- replace with path to your file location
 			WITH (
@@ -198,10 +254,18 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 				FIRSTROW = 2,
 				TABLOCK
 			);
-			PRINT 'Data import successfully table: Bronze.crm_prd_info';	
-			PRINT '---------------------------------------------------------------';
+			PRINT '------------------------------------------------------------------------------';
+
+			PRINT 'Data imported successfully table: Bronze.crm_prd_info';
+
+			-- table end time setup
+			SET @tbl_end_time = GETDATE();
+			PRINT 'LAYER: BRONZE';
+			PRINT 'TABLE: crm_prd_info';
+			PRINT 'LOADING TIME (seconds): ' +  ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
+			PRINT '==============================================================================';
 			PRINT '';
-			PRINT '---------------------------------------------------------------';
+			
 			-- load crm_prd_info End.
 		END TRY
 		BEGIN CATCH 
@@ -214,10 +278,16 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 
 
 
-			-- load crm_cust_info begin
-		PRINT '---------------------------------------------------------------';
+		-- load crm_cust_info begin
+
+		PRINT '==============================================================================';
 		PRINT 'TABLE: bronze.crm_cust_info , ACTION: Data import';
 		BEGIN TRY
+
+			-- table time set up 
+			SET @tbl_start_time = GETDATE();
+
+
 			BULK INSERT bronze.crm_cust_info 
 			FROM 'C:\Users\M D\Downloads\Data_source\soucre_crm\cust_info.csv' -- replace with path to your file location
 			WITH (
@@ -227,11 +297,18 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 				TABLOCK
 			);
 	
-			PRINT 'Data import successfully table: Bronze.crm_cust_info';	
-			PRINT '---------------------------------------------------------------';
+			-- table end time setup
+			SET @tbl_end_time = GETDATE();
+			PRINT '------------------------------------------------------------------------------';
+			PRINT 'Data imported successfully table: Bronze.cust_info';	
+			PRINT 'LAYER: BRONZE';
+			PRINT 'TABLE: cust_info';
+			PRINT 'LOADING TIME (seconds): ' +  ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
+			PRINT '==============================================================================';
 			PRINT '';
+
 			-- load crm_cust_info End.
-			PRINT '---------------------------------------------------------------';
+
 		END TRY
 		BEGIN CATCH 
 			PRINT 'An Error occured While Trying to insert Data in Table: crm_cust_info' + ERROR_MESSAGE(); 
@@ -242,9 +319,14 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 	
 
 		-- load erp_px_cat begin
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
 		PRINT 'TABLE: bronze.erp_px_cat , ACTION: Data import';
 		BEGIN TRY
+
+			-- table time set up 
+			SET @tbl_start_time = GETDATE();
+
 			BULK INSERT bronze.erp_px_cat 
 			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\PX_CAT_G1V2.csv' -- replace with path to your file location
 			WITH (
@@ -254,11 +336,19 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 				TABLOCK
 			);
 		
-			PRINT 'Data import successfully table: Bronze.erp_px_cat';	
-			PRINT '---------------------------------------------------------------';
+			-- table end time setup
+			SET @tbl_end_time = GETDATE();
+
+			PRINT '------------------------------------------------------------------------------';
+
+			PRINT 'Data imported successfully table: Bronze.erp_px_cat';	
+			PRINT 'LAYER: BRONZE';
+			PRINT 'TABLE: erp_px_cat';
+			PRINT 'LOADING TIME (seconds): ' +  ' '  + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
+			PRINT '==============================================================================';
 			PRINT '';
 			-- load erp_px_cat End.
-			PRINT '---------------------------------------------------------------';
+
 		END TRY
 		BEGIN CATCH
 			PRINT 'An Error occured While Trying to insert Data in Table: erp_px_cat' + ERROR_MESSAGE(); 
@@ -269,9 +359,15 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 	
 	
 		-- load erp_Loc begin
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
 		PRINT 'TABLE: bronze.erp_Loc , ACTION: Data import';
 		BEGIN TRY 
+
+			-- table time set up 
+			SET @tbl_start_time = GETDATE();
+
+
 			BULK INSERT bronze.erp_Loc 
 			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\LOC_A101.csv' -- replace with path to your file location
 			WITH (
@@ -281,11 +377,19 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 				TABLOCK
 			);
 	
-			PRINT 'Data import successfully table: Bronze.erp_Loc';	
-			PRINT '---------------------------------------------------------------';
+			-- table end time setup
+			SET @tbl_end_time = GETDATE();
+
+			PRINT '------------------------------------------------------------------------------';
+			PRINT 'Data imported successfully table: Bronze.erp_Loc';	
+			PRINT 'LAYER: BRONZE';
+			PRINT 'TABLE: erp_Loc';
+			PRINT 'LOADING TIME (seconds): ' + ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
+			PRINT '==============================================================================';
 			PRINT '';
+
 			-- load erp_Loc End.
-			PRINT '---------------------------------------------------------------';
+
 		END TRY
 		BEGIN CATCH 
 			PRINT 'An Error occured While Trying to insert Data in Table: erp_Loc' + ERROR_MESSAGE(); 
@@ -296,9 +400,14 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 	
 
 		-- load erp_cust begin
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
 		PRINT 'TABLE: bronze.erp_Cust , ACTION: Data import';
 		BEGIN TRY 
+
+			-- table time set up 
+			SET @tbl_start_time = GETDATE();
+
 			BULK INSERT bronze.erp_cust
 			FROM 'C:\Users\M D\Downloads\Data_source\source_erp\CUST_AZ12.csv' -- replace with path to your file location
 			WITH (
@@ -307,11 +416,21 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 				FIRSTROW = 2,
 				TABLOCK
 			);
-			PRINT 'Data import successfully table: Bronze.erp_cust';	
-			PRINT '---------------------------------------------------------------';
+
+			-- table end time setup
+			SET @tbl_end_time = GETDATE();
+
+			PRINT '------------------------------------------------------------------------------';
+
+			PRINT 'Data imported successfully table: Bronze.erp_Cust';	
+			PRINT 'LAYER: BRONZE';
+			PRINT 'TABLE: erp_Cust';
+			PRINT 'LOADING TIME (seconds): ' + ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
+			PRINT '==============================================================================';
 			PRINT '';
+
 			-- load erp_cust End.
-			PRINT '---------------------------------------------------------------';
+
 		END TRY
 		BEGIN CATCH
 			PRINT 'An Error occured While Trying to insert Data in Table: erp_cust' + ERROR_MESSAGE(); 
@@ -319,5 +438,20 @@ CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS
 			PRINT 'Error Severity: ' + CAST(ERROR_SEVERITY() AS VARCHAR(10));
 			PRINT 'Error State: ' + CAST(ERROR_STATE() AS VARCHAR(10));
 		END CATCH;
+
+		--end time 
+		SET @end_time = GETDATE();
+	
+	PRINT '';
+	PRINT '';
+	PRINT '==============================================================================';
+	PRINT '==============================================================================';
+	PRINT 'LAYER: BRONZE LOADING TIME (seconds)';
+	PRINT 'TIME TAKEN: ' + ' ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR)
+	PRINT '==============================================================================';
+	PRINT '==============================================================================';
+	PRINT '';
+	PRINT '';
 	
 	END;
+

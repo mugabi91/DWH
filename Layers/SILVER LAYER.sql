@@ -4,17 +4,23 @@
 -- */
 CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 	BEGIN
-		PRINT ''
-		PRINT '===============================================================';
-		PRINT 'BEGINNING TO TRANSFROM AND LOAD DATA INTO SILVER LAYER  ';
-		PRINT '===============================================================';
+		PRINT '';
+		PRINT '==============================================================================';
+		PRINT '                           SILVER LAYER STARTING                               ';
+		PRINT '==============================================================================';
+		PRINT '';
 
+		-- TIME SETUP 
+		DECLARE @start_time DATETIME, @end_time DATETIME;
+
+		-- overall start time setup 
+		SET @start_time = GETDATE();
 
 		-- crm_sales table begin.
-		
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
 		PRINT 'TABLE: silver.crm_sales, ACTION: Creation/setup';
-		PRINT '---------------------------------------------------------------';
+		PRINT '------------------------------------------------------------------------------';
+
 
 		IF OBJECT_ID('silver.crm_sales') IS NOT NULL
 			BEGIN
@@ -113,9 +119,10 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 		END CATCH;
 
 		PRINT 'Data import successfully table: silver.crm_sales';
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
 		PRINT '';
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		-- -- crm_sales table end
 
 
@@ -123,7 +130,8 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 		-- prd_info table begin.
 
 		PRINT 'TABLE: silver.crm_prd_info, ACTION: Creation/setup';
-		PRINT '---------------------------------------------------------------';
+		PRINT '------------------------------------------------------------------------------';
+
 
 		IF OBJECT_ID('silver.crm_prd_info') IS NOT NULL
 			BEGIN
@@ -207,9 +215,13 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 		END CATCH;
 
 		PRINT 'Data import successfully table: silver.crm_prd_info';
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
+
+
 		PRINT '';
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		-- prd_info table end.
 
 		-- silver.cust_info table begin.
@@ -231,9 +243,10 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 					created_at: Added meta data
 
 		*/
-		PRINT '---------------------------------------------------------------';
+	
 		PRINT 'TABLE: silver.crm_cust_info, ACTION: Creation/setup';
-		PRINT '---------------------------------------------------------------';
+		PRINT '------------------------------------------------------------------------------';
+
 		IF OBJECT_ID('silver.crm_cust_info') IS NOT NULL
 			BEGIN
 				PRINT 'Dropping silver.crm_cust_info table';
@@ -365,7 +378,9 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 				) AS Combined_table;
 
 			PRINT 'Created, Transformed and loaded successfully TABLE: silver.crm_cst_info'	
-			PRINT '---------------------------------------------------------------';
+			
+			PRINT '==============================================================================';
+			
 			PRINT ''
 		END TRY
 		BEGIN CATCH 
@@ -373,7 +388,9 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 			PRINT 'ERROR:'+ ERROR_MESSAGE();
 		END CATCH;
 		DROP TABLE IF EXISTS #temp_table_1, #temp_table_2;
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
+
 		-- silver.cust_info table end.
 
 
@@ -381,7 +398,8 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 		-- erp_Loc table begin.
 
 		PRINT 'TABLE: silver.erp_Loc, ACTION: Creation/setup';
-		PRINT '---------------------------------------------------------------';
+		PRINT '------------------------------------------------------------------------------';
+
 		IF OBJECT_ID('silver.erp_Loc') IS NOT NULL
 			BEGIN
 				PRINT 'Dropping silver.erp_Loc table';
@@ -418,14 +436,17 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 				GETDATE() as dwh_created_at
 			FROM bronze.erp_Loc;
 			PRINT 'Created, Transformed and loaded successfully TABLE: silver.erp_Loc';	
-			PRINT '---------------------------------------------------------------';
+			PRINT '==============================================================================';
 			PRINT '';
 		END TRY
 		BEGIN CATCH 
 			PRINT 'Table data insertion ERROR: silver.erp_Loc';
 			PRINT 'ERROR:'+ ERROR_MESSAGE();
 		END CATCH;
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
+
+
 		-- erp_Loc table end.
 		
 
@@ -433,7 +454,8 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 		-- erp_cust table begin.
 
 		PRINT 'TABLE: silver.erp_cust, ACTION: Creation/setup';
-		PRINT '---------------------------------------------------------------';
+		PRINT '------------------------------------------------------------------------------';
+
 		IF OBJECT_ID('silver.erp_cust') IS NOT NULL
 			BEGIN
 				PRINT 'Dropping silver.erp_cust table';
@@ -449,9 +471,7 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 				erp_gender NVARCHAR(50),
 				erp_dwh_created_at DATETIME
 				);
-		PRINT 'Table has been created Successfully: silver.erp_Cust';	
-		PRINT '---------------------------------------------------------------';
-		PRINT '';
+		PRINT 'Table has been created Successfully: silver.erp_Cust';
 		-- insert silver layer data for table silver.crm_sales
 		BEGIN TRY
 			WITH clean_erp_cust AS(
@@ -503,13 +523,18 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 		END CATCH;
 
 		PRINT 'Data import successfully table: silver.erp_cust';
-		PRINT '---------------------------------------------------------------';
+		PRINT '==============================================================================';
+
 		PRINT '';
-		PRINT '---------------------------------------------------------------';
+
+		PRINT '==============================================================================';
+
 		-- erp_cust table end.
 
 
 		-- erp_px_cat table begin.
+		PRINT 'TABLE: silver.erp_px_cat, ACTION: Creation/setup';
+		PRINT '------------------------------------------------------------------------------';
 
 		IF OBJECT_ID('silver.erp_px_cat') IS NOT NULL
 			BEGIN
@@ -527,9 +552,7 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 			erp_cat_maintenace NVARCHAR(50),
 			dwh_created_at DATETIME
 		);
-		PRINT 'Table has been created Successfully: silver.erp_px_cat';	
-		PRINT '---------------------------------------------------------------';
-		PRINT ''
+
 		BEGIN TRY
 			WITH clean_cat AS (
 				SELECT 
@@ -560,5 +583,23 @@ CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 			PRINT 'Table data insertion ERROR: silver.erp_px_cat';
 			PRINT 'ERROR:'+ ERROR_MESSAGE()
 		END CATCH;
+		
+	PRINT '==============================================================================';
+
 	-- erp_px_cat table end.
+
+	-- overall end time setup
+	SET @end_time = GETDATE();
+
+	PRINT '';
+	PRINT '';
+	PRINT '==============================================================================';
+	PRINT '==============================================================================';
+	PRINT 'LAYER: SILVER LOADING TIME (seconds)';
+	PRINT 'TIME TAKEN: ' + ' ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR)
+	PRINT '==============================================================================';
+	PRINT '==============================================================================';
+	PRINT '';
+	PRINT '';
+
 	END;
