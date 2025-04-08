@@ -7,6 +7,7 @@ USE DWH;
     BEGIN TRY
         -- Create bronze layer, load data into bronze layer
         EXECUTE [Load_bronze_Layer]
+        PRINT 'LAYER: Bronze created and Loaded successfully'
     END TRY 
     BEGIN CATCH 
         PRINT 'Error in Load_bronze_Layer';
@@ -19,6 +20,7 @@ USE DWH;
     BEGIN TRY 
         -- create silver layer, transform and load data into silver layer
         EXECUTE [Load_silver_Layer]
+        PRINT 'LAYER: Silver created and Loaded successfully'
     END TRY    
     BEGIN CATCH 
         PRINT 'Error in Load_silver_Layer';
@@ -31,6 +33,7 @@ USE DWH;
     BEGIN TRY 
         -- create silver layer, transform and load data into silver layer
         EXECUTE [Load_gold_Layer]
+        PRINT 'LAYER: Gold created and Loaded successfully'
     END TRY    
     BEGIN CATCH 
         PRINT 'Error in Load_gold_Layer';
@@ -38,3 +41,9 @@ USE DWH;
         RETURN;
     END CATCH;
 
+    PRINT ''
+    PRINT '===================================================================='
+    PRINT '===================================================================='
+    PRINT 'Successfully Created and loaded all Layers in the DWH '
+    PRINT '===================================================================='
+    
