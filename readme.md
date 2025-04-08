@@ -4,9 +4,12 @@
 
 This project is a Data Warehouse (DWH) implementation built entirely using Microsoft SQL Server (T-SQL). It follows a structured multi-layered architecture where data flows systematically from raw ingestion to a refined, structured data model.
 
+![Data Flow Chart](illustrations/DWH%20explanation.jpg)
+
 ## Data Flow and Architecture
 
 The data flows through three distinct layers:
+![Data Flow Chart 2](illustrations/Thought%20process.jpg)
 
 1. **Bronze Layer** (Raw Data Landing Zone)
    - This is the staging layer where raw CSV files are ingested without any modifications.
@@ -35,6 +38,8 @@ The project integrates data from two main systems:
 - `px_cat_giv2.csv` - Contains product categorization details.
 
 All data sources are CSV files and are loaded into SQL Server.
+
+![Data flow chart 3](illustrations/DWH%20arch.jpg)
 
 ## Technologies Used
 
