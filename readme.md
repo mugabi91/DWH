@@ -39,7 +39,7 @@ The project integrates data from two main systems:
 
 All data sources are CSV files and are loaded into SQL Server.
 
-![Data flow chart 3](illustrations/DWH%20arch1.jpg)
+![Data flow chart 3](illustrations/DWH%20Arch1.jpg)
 
 ## Technologies Used
 
