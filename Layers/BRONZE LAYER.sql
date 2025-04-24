@@ -1,3 +1,5 @@
+
+
 CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS 
 	BEGIN
 		-- Switching to the correct database 

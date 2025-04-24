@@ -1,25 +1,27 @@
 /*
-     This scripts creates the Gold layer as views of the other refined tables creating the tables below.
-          Tables:
-               Products
-               customers
+This scripts creates the Gold layer as views of the other refined tables creating the tables below.
+     Tables:
+          Products
+          customers
 
 */
+
+     
 CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      BEGIN
      -- TIME SETUP 
      PRINT '';
      PRINT '';
-	PRINT '==============================================================================';
-	PRINT '                           GOLD LAYER STARTING                               ';
-	PRINT '==============================================================================';
+     PRINT '==============================================================================';
+     PRINT '                           GOLD LAYER STARTING                               ';
+     PRINT '==============================================================================';
      PRINT '';
 
 
-	DECLARE @start_time DATETIME, @end_time DATETIME, @tbl_start_time DATETIME, @tbl_end_time DATETIME;
+     DECLARE @start_time DATETIME, @end_time DATETIME, @tbl_start_time DATETIME, @tbl_end_time DATETIME;
 
-	-- overall start time setup 
-	SET @start_time = GETDATE();
+     -- overall start time setup 
+     SET @start_time = GETDATE();
 
      -- Drop the view for all products sold if it exists
      IF OBJECT_ID('gold.all_products_sold', 'V') IS NOT NULL
@@ -27,7 +29,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
 
      -- Create the view for all products sold
 
-	SET @tbl_start_time = GETDATE();
+     SET @tbl_start_time = GETDATE();
 
      EXEC('
           CREATE OR ALTER VIEW gold.all_products_sold AS
@@ -51,7 +53,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      SET @tbl_end_time = GETDATE();
      PRINT '==============================================================================';
      PRINT 'Data Transform successfully View: GOLD.all_products_sold';	
-	PRINT '------------------------------------------------------------------------------';
+     PRINT '------------------------------------------------------------------------------';
      PRINT 'LAYER: GOLD';
      PRINT 'VIEW: all_products_sold';
      PRINT 'LOADING TIME (seconds)' + ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
@@ -64,7 +66,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
           EXEC('DROP VIEW gold.current_products_sold');
 
      
-	SET @tbl_start_time = GETDATE();
+     SET @tbl_start_time = GETDATE();
      -- Create the view for current products sold
      EXEC('
           CREATE OR ALTER VIEW gold.current_products_sold AS
@@ -88,7 +90,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      SET @tbl_end_time = GETDATE();
      PRINT '==============================================================================';
      PRINT 'Data Transform successfully View: GOLD.current_products_sold';	
-	PRINT '------------------------------------------------------------------------------';
+     PRINT '------------------------------------------------------------------------------';
      PRINT 'LAYER: GOLD';
      PRINT 'VIEW: current_products_sold';
      PRINT 'LOADING TIME (seconds)' + ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
@@ -99,7 +101,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      IF OBJECT_ID('gold.sales', 'V') IS NOT NULL
           EXEC('DROP VIEW gold.sales');
 
-	SET @tbl_start_time = GETDATE();
+     SET @tbl_start_time = GETDATE();
      -- Create the view for current products sold
      EXEC('
           CREATE OR ALTER VIEW gold.sales AS
@@ -139,19 +141,19 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      SET @tbl_end_time = GETDATE();
      PRINT '==============================================================================';
      PRINT 'Data Transform successfully table: GOLD.customer_sales';	
-	PRINT '------------------------------------------------------------------------------';
+     PRINT '------------------------------------------------------------------------------';
      PRINT 'LAYER: GOLD';
      PRINT 'VIEW: customer_sales';
      PRINT 'LOADING TIME (seconds)' + ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
      PRINT '==============================================================================';
      PRINT '';
 
- -- Drop the view for current products sold if it exists
+-- Drop the view for current products sold if it exists
      IF OBJECT_ID('gold.current_products_sold', 'V') IS NOT NULL
           EXEC('DROP VIEW gold.current_products_sold');
 
      
-	SET @tbl_start_time = GETDATE();
+     SET @tbl_start_time = GETDATE();
      -- Create the view for current products sold
      EXEC('
           CREATE OR ALTER VIEW gold.current_products_sold AS
@@ -175,7 +177,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      SET @tbl_end_time = GETDATE();
      PRINT '==============================================================================';
      PRINT 'Data Transform successfully View: GOLD.current_products_sold';	
-	PRINT '------------------------------------------------------------------------------';
+     PRINT '------------------------------------------------------------------------------';
      PRINT 'LAYER: GOLD';
      PRINT 'VIEW: current_products_sold';
      PRINT 'LOADING TIME (seconds)' + ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
@@ -186,7 +188,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      IF OBJECT_ID('gold.customers', 'V') IS NOT NULL
           EXEC('DROP VIEW gold.customers');
 
-	SET @tbl_start_time = GETDATE();
+     SET @tbl_start_time = GETDATE();
      -- Create the view for current products sold 
      EXEC('
           CREATE OR ALTER VIEW gold.customers AS
@@ -217,7 +219,7 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      SET @tbl_end_time = GETDATE();
      PRINT '==============================================================================';
      PRINT 'Data Transform successfully table: GOLD.customers';	
-	PRINT '------------------------------------------------------------------------------';
+     PRINT '------------------------------------------------------------------------------';
      PRINT 'LAYER: GOLD';
      PRINT 'VIEW: customers';
      PRINT 'LOADING TIME (seconds)' + ' ' + CAST(DATEDIFF(SECOND, @tbl_start_time, @tbl_end_time) AS NVARCHAR);
@@ -227,17 +229,17 @@ CREATE OR ALTER PROCEDURE Load_gold_Layer AS
 
 
      -- overall end time setup
-	SET @end_time = GETDATE();
+     SET @end_time = GETDATE();
 
-	PRINT '';
-	PRINT '==============================================================================';
-	PRINT '==============================================================================';
-	PRINT '';
+     PRINT '';
+     PRINT '==============================================================================';
+     PRINT '==============================================================================';
+     PRINT '';
      PRINT 'LAYER: GOLD LOADING TIME (seconds)';
-	PRINT 'TIME TAKEN: ' + ' ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR)
-	PRINT '==============================================================================';
-	PRINT '==============================================================================';
-	PRINT '';
-	PRINT '';
+     PRINT 'TIME TAKEN: ' + ' ' + CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR)
+     PRINT '==============================================================================';
+     PRINT '==============================================================================';
+     PRINT '';
+     PRINT '';
 
      END;

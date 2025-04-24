@@ -38,11 +38,15 @@ def load_data_in_db():
     with closing(pyodbc.connect(connection_string)) as conn:
         cursor = conn.cursor()
         
-        for script in [SETUP_SCRIPT_LOCATION, BRONZE_SCRIPT_LOCATION, SILVER_SCRIPT_LOCATION, GOLD_SCRIPT_LOCATION, MAIN_SCRIPT_LOCATION]:
+        for script in [BRONZE_SCRIPT_LOCATION, SILVER_SCRIPT_LOCATION, GOLD_SCRIPT_LOCATION, MAIN_SCRIPT_LOCATION]:
             try:
                 cursor.execute(
                     f"{load_schema(script)}"
                 )
+                
+                for source, message in cursor.messages:
+                    print(f"source: {source} | Message: {message}")
+                cursor.messages.clear()
                 # commit the changes to the database
                 conn.commit() 
                 print(f"{script.split('\\')[-1]}: Script Executed Successfully.")
@@ -55,4 +59,4 @@ def load_data_in_db():
 
 if __name__ == "__main__":
     load_data_in_db()
-    
+    # print(load_schema(BRONZE_SCRIPT_LOCATION))

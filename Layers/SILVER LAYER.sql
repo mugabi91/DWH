@@ -2,6 +2,7 @@
 -- 	This script creates the silver layer tables and applies Transformations as stated below for each
 -- 	
 -- */
+
 CREATE OR ALTER PROCEDURE Load_silver_Layer AS
 	BEGIN
 		PRINT '';

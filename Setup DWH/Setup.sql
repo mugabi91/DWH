@@ -19,9 +19,10 @@ USE master;
             PRINT 'Database DWH already exists. No action taken.';
         END
 
-GO
+    GO
 
 USE DWH;
+
     GO
     -- create the schemas layers if they do not exist
     IF SCHEMA_ID('bronze') IS NULL
