@@ -135,9 +135,11 @@ def connect_and_execute(scripts:List[str]|str, connection_str=connection_string)
             
 
 def main():
+    # check if the DB already exists and if not create it.
     if not check_database_exists(DWH_DB_NAME):
         connect_and_execute(SETUP_SCRIPT_1_LOCATION)
-        if check_database_exists(DWH_DB_NAME):
+        if check_database_exists(DWH_DB_NAME): # check again see if it was created.
+            # run all the other scripts to create DWH
             connect_and_execute(SETUP_SCRIPT_2_LOCATION)
             connect_and_execute(SCRIPTS)
         else:
