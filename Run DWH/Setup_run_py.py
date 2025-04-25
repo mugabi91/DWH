@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from contextlib import closing
 from rich import print 
 from typing import List, Any
+import json
 
 # -------- env load and setup ------
 load_dotenv()
@@ -13,15 +14,18 @@ driver_name = os.getenv('DB_DRIVER')
 server = os.getenv('SERVER')
 database = os.getenv('DATABASE')
 connection_string= f"DRIVER={driver_name};SERVER={server};DATABASE={database};Trusted_Connection=yes;"
-Go_re_pattern = re.compile(r"\s+GO\s+|GO\s+|GO")
 
-# --------- script locations --------
-SETUP_SCRIPT_1_LOCATION = r"Setup DWH\Setup_script_1.sql"
-SETUP_SCRIPT_2_LOCATION = r"Setup DWH\Setup_script_2.sql"
-MAIN_SCRIPT_LOCATION = r"Run DWH\MAIN.sql"
-BRONZE_SCRIPT_LOCATION = r"Layers\BRONZE LAYER.sql"
-SILVER_SCRIPT_LOCATION = r"Layers\SILVER LAYER.sql"
-GOLD_SCRIPT_LOCATION = r"Layers\GOLD LAYER.sql"
+
+# --------- script locations ------
+with open(r'Run DWH\config.json') as f:
+    config = json.load(f)
+Go_re_pattern = re.compile(config["re_expressions"]["Go_pattern"])
+SETUP_SCRIPT_1_LOCATION = config['scripts']['SETUP_SCRIPT_1']
+SETUP_SCRIPT_2_LOCATION = config['scripts']['SETUP_SCRIPT_2']
+MAIN_SCRIPT_LOCATION = config['scripts']['MAIN_SCRIPT']
+BRONZE_SCRIPT_LOCATION = config['scripts']['BRONZE_SCRIPT']
+SILVER_SCRIPT_LOCATION = config['scripts']['SILVER_SCRIPT']
+GOLD_SCRIPT_LOCATION = config['scripts']['GOLD_SCRIPT']
 
 #----------- Execution order of scripts --------
 SCRIPTS = [BRONZE_SCRIPT_LOCATION, SILVER_SCRIPT_LOCATION, GOLD_SCRIPT_LOCATION, MAIN_SCRIPT_LOCATION]
@@ -143,7 +147,7 @@ def main():
             connect_and_execute(SETUP_SCRIPT_2_LOCATION)
             connect_and_execute(SCRIPTS)
         else:
-            print(f"{DWH_DB_NAME}:DB doesnt exist")
+            print(f"{DWH_DB_NAME}: DB doesn't exist")
     else:
         connect_and_execute(SCRIPTS)
 

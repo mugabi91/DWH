@@ -16,5 +16,5 @@ USE master;
         ELSE
         BEGIN
             PRINT 'Database DWH already exists. No action taken.';
-        END
+        END;
     GO
