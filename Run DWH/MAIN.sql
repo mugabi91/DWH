@@ -2,6 +2,9 @@
     This script is used to load the data into the bronze layer and silver layer of the Data Warehouse.
 
 */
+USE DWH;
+
+GO
 
 DECLARE @start_time_full DATETIME , @end_time_full DATETIME;
 SET @start_time_full = GETDATE()

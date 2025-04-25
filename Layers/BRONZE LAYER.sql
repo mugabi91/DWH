@@ -1,4 +1,7 @@
 
+USE DWH;
+
+GO
 
 CREATE OR ALTER PROCEDURE Load_Bronze_Layer AS 
 	BEGIN

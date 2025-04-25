@@ -6,7 +6,10 @@ This scripts creates the Gold layer as views of the other refined tables creatin
 
 */
 
-     
+USE DWH;
+
+GO
+
 CREATE OR ALTER PROCEDURE Load_gold_Layer AS
      BEGIN
      -- TIME SETUP 
